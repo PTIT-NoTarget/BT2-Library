@@ -1,6 +1,8 @@
 package com.facenet.bt2.repos;
 
+import com.facenet.bt2.entity.Author;
 import com.facenet.bt2.entity.Book;
+import com.facenet.bt2.entity.Category;
 import com.facenet.bt2.entity.Library;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +24,10 @@ public interface BookRepos extends JpaRepository<Book, Integer>, JpaSpecificatio
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"authors", "categories", "libraries", "pictures"})
     Page<Book> findAllByLibraries(Library library, Pageable pageable);
+
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"authors", "categories", "libraries", "pictures"})
+    Page<Book> findAllByCategories(Category category, Pageable pageable);
+
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"authors", "categories", "libraries", "pictures"})
+    Page<Book> findAllByAuthors(Author author, Pageable pageable);
 }

@@ -14,7 +14,6 @@ public interface ILibraryService {
     void deleteLibrary(int id);
     Set<LibraryDto> getAllLibrary();
     LibraryDto getLibraryById(int id);
-    LibraryDto convertToDto(Library library, IBookService bookService);
-
+    LibraryDto convertToDto(Library library);
     void addLibraryWithBook(AddLibraryWithBookRequest addLibraryWithBookRequest);
 }

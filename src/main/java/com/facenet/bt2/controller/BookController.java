@@ -1,16 +1,16 @@
 package com.facenet.bt2.controller;
 
 import com.facenet.bt2.dto.BookDto;
+import com.facenet.bt2.repos.AuthorRepos;
 import com.facenet.bt2.repos.BookRepos;
+import com.facenet.bt2.repos.CategoryRepos;
 import com.facenet.bt2.repos.LibraryRepos;
-import com.facenet.bt2.request.AddLibraryWithBookRequest;
-import com.facenet.bt2.request.BookByLibraryRequest;
-import com.facenet.bt2.request.BookRequest;
-import com.facenet.bt2.request.SearchRequest;
-import com.facenet.bt2.response.BookByLibraryResponse;
+import com.facenet.bt2.request.*;
+import com.facenet.bt2.response.BookResponse;
 import com.facenet.bt2.service.IBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +28,10 @@ public class BookController {
     private BookRepos bookRepos;
     @Autowired
     private LibraryRepos libraryRepos;
+    @Autowired
+    private AuthorRepos authorRepos;
+    @Autowired
+    private CategoryRepos categoryRepos;
 
     private boolean isValidateBookRequest(BookRequest bookRequest) {
         return bookRequest.getIsbn() == null || bookRequest.getIsbn().isEmpty()
@@ -78,13 +82,37 @@ public class BookController {
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
-    @GetMapping("/get-all-by-library")
-    public ResponseEntity<BookByLibraryResponse> getAllBooksByLibraryId(@RequestBody BookByLibraryRequest bookByLibraryRequest) {
-        if(libraryRepos.findById(bookByLibraryRequest.getLibraryId()).isEmpty()) {
+    @GetMapping("/get-all-by-library/{libraryId}")
+    public ResponseEntity<BookResponse> getAllBooksByLibraryId(@PathVariable int libraryId,
+                                                                @RequestParam("page") int page,
+                                                                @RequestParam("size") int size
+                                                               ) {
+        if(libraryRepos.findById(libraryId).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(bookService.getAllBooksByLibraryId(bookByLibraryRequest), HttpStatus.OK);
+        return new ResponseEntity<>(bookService.getAllBooksByLibraryId(libraryId,page,size), HttpStatus.OK);
     }
+
+    @GetMapping("/get-all-by-category/{categoryId}")
+    public ResponseEntity<BookResponse> getAllBooksByCategoryId(@PathVariable int categoryId,
+                                                                @RequestParam("page") int page,
+                                                                @RequestParam("size") int size
+                                                                  ) {
+          if(categoryRepos.findById(categoryId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+          }
+          return new ResponseEntity<>(bookService.getAllBooksByCategoryId(categoryId,page,size), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-by-author/{authorId}")
+    public ResponseEntity<BookResponse> getAllBooksByAuthorId(@PathVariable int authorId,
+                                                              @RequestParam("page") int page,
+                                                              @RequestParam("size") int size) {
+            if(authorRepos.findById(authorId).isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(bookService.getAllBooksByAuthorId(authorId,page,size), HttpStatus.OK);
+        }
 
     @GetMapping("/search")
     public ResponseEntity<Set<BookDto>> searchBook(@RequestBody SearchRequest searchRequest) {

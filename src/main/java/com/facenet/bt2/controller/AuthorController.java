@@ -26,8 +26,8 @@ public class AuthorController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addBook(@RequestBody AuthorRequest authorRequest) {
-        if(authorRequest.getName() == null || authorRequest.getName().isEmpty()
-                || authorRequest.getDob() == null || authorRequest.getDob().isEmpty()
+        if( authorRequest.getName() == null || authorRequest.getName().isEmpty()
+        || authorRequest.getDob() == null || authorRequest.getDob().isEmpty()
         ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add author request");
         }
@@ -37,7 +37,7 @@ public class AuthorController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateBook(@PathVariable int id, @RequestBody AuthorRequest authorRequest) {
-        if(authorRequest.getName() == null || authorRequest.getName().isEmpty()
+        if( authorRequest.getName() == null || authorRequest.getName().isEmpty()
         || authorRequest.getDob() == null || authorRequest.getDob().isEmpty()
         ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update author request");

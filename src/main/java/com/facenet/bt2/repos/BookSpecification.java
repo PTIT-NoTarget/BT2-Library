@@ -23,16 +23,14 @@ public class BookSpecification {
     public static Specification<Book> hasAuthor(String author) {
         return (book, cq, cb) -> {
             Join<Book, Author> bookAuthorJoin = book.join("authors");
-            Predicate authorNamePredicate = cb.like(cb.lower(bookAuthorJoin.get("name")), "%" + author.toLowerCase() + "%");
-            return authorNamePredicate;
+            return cb.like(cb.lower(bookAuthorJoin.get("name")), "%" + author.toLowerCase() + "%");
         };
     }
 
     public static Specification<Book> hasCategory(String category) {
         return (book, cq, cb) -> {
             Join<Book, Category> bookCategoryJoin = book.join("categories");
-            Predicate categoryNamePredicate = cb.like(cb.lower(bookCategoryJoin.get("name")), "%" + category.toLowerCase() + "%");
-            return categoryNamePredicate;
+            return cb.like(cb.lower(bookCategoryJoin.get("name")), "%" + category.toLowerCase() + "%");
         };
     }
 }

@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,7 @@ public class AuthorService implements IAuthorService {
 
     @Override
     public Set<AuthorDto> getAllAuthor() {
+        addAuthors();
         return authorRepos.findAll().stream().map(this::convertToDto).collect(Collectors.toSet());
     }
 
@@ -69,5 +71,19 @@ public class AuthorService implements IAuthorService {
         authorDto.setName(author.getName());
         authorDto.setDob(author.getDob().toString());
         return authorDto;
+    }
+
+    @Override
+    public void addAuthors() {
+        Set<Author> authors = new HashSet<>(authorRepos.findAll());
+        Author author1 = new Author();
+        author1.setName("Nguyen Nhat Anh");
+        author1.setDob(new Timestamp(0));
+        Author author2 = new Author();
+        author2.setName("Nguyen Nhat Anh");
+        author2.setDob(new Timestamp(0));
+        authors.add(author1);
+        authors.add(author2);
+        authorRepos.saveAll(authors);
     }
 }

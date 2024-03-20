@@ -3,10 +3,8 @@ package com.facenet.bt2.service.impl;
 import com.facenet.bt2.dto.BookDto;
 import com.facenet.bt2.entity.*;
 import com.facenet.bt2.repos.*;
-import com.facenet.bt2.request.BookByLibraryRequest;
-import com.facenet.bt2.request.BookRequest;
-import com.facenet.bt2.request.SearchRequest;
-import com.facenet.bt2.response.BookByLibraryResponse;
+import com.facenet.bt2.request.*;
+import com.facenet.bt2.response.BookResponse;
 import com.facenet.bt2.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -154,32 +151,60 @@ public class BookService implements IBookService{
 
     @Override
     public Set<BookDto> getAllBooks() {
-
-        return bookRepos.findAll().stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService())).collect(Collectors.toSet());
+        return bookRepos.findAll().stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService(),null)).collect(Collectors.toSet());
     }
 
     @Override
-    public BookByLibraryResponse getAllBooksByLibraryId(BookByLibraryRequest bookByLibraryRequest) {
-        BookByLibraryResponse bookByLibraryResponse = new BookByLibraryResponse();
-        Pageable pageable = PageRequest.of(bookByLibraryRequest.getPageNumber(), bookByLibraryRequest.getPageSize());
-        Page<Book> books = bookRepos.findAllByLibraries(libraryRepos.findById(bookByLibraryRequest.getLibraryId()).get(), pageable);
-        bookByLibraryResponse.setBooks(books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService())).collect(Collectors.toSet()));
+    public BookResponse getAllBooksByLibraryId(int libraryId, int pageNumber, int pageSize) {
+        BookResponse bookByLibraryResponse = new BookResponse();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Book> books = bookRepos.findAllByLibraries(libraryRepos.findById(libraryId).get(), pageable);
+        bookByLibraryResponse.setBooks(books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService(),null)).collect(Collectors.toSet()));
         bookByLibraryResponse.setTotalPage(books.getTotalPages());
         bookByLibraryResponse.setTotalElement(books.getTotalElements());
         return bookByLibraryResponse;
     }
 
+    @Override
+    public BookResponse getAllBooksByCategoryId(int categoryId, int pageNumber, int pageSize) {
+        BookResponse bookByCategoryResponse = new BookResponse();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Book> books = bookRepos.findAllByCategories(categoryRepos.findById(categoryId).get(), pageable);
+        bookByCategoryResponse.setBooks(books.stream().map(book -> convertToDto(book, new AuthorService(), null, new PictureService(),new LibraryService())).collect(Collectors.toSet()));
+        bookByCategoryResponse.setTotalPage(books.getTotalPages());
+        bookByCategoryResponse.setTotalElement(books.getTotalElements());
+        return bookByCategoryResponse;
+    }
 
     @Override
-    public BookDto convertToDto(Book book, IAuthorService authorService, ICategoryService categoryService, IPictureService pictureService) {
+    public BookResponse getAllBooksByAuthorId(int authorId, int pageNumber, int pageSize) {
+        BookResponse bookByAuthorResponse = new BookResponse();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Book> books = bookRepos.findAllByAuthors(authorRepos.findById(authorId).get(), pageable);
+        bookByAuthorResponse.setBooks(books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService(),new LibraryService())).collect(Collectors.toSet()));
+        bookByAuthorResponse.setTotalPage(books.getTotalPages());
+        bookByAuthorResponse.setTotalElement(books.getTotalElements());
+        return bookByAuthorResponse;
+    }
+
+
+    @Override
+    public BookDto convertToDto(Book book, IAuthorService authorService, ICategoryService categoryService, IPictureService pictureService, ILibraryService libraryService) {
         BookDto bookDto = new BookDto();
         bookDto.setId(book.getId());
         bookDto.setIsbn(book.getIsbn());
         bookDto.setName(book.getName());
         bookDto.setDateOfPublic(String.valueOf(book.getDateOfPublic()));
         bookDto.setNumOfPage(book.getNumOfPage());
-        bookDto.setAuthors(book.getAuthors().stream().map(authorService::convertToDto).toList());
-        bookDto.setCategories(book.getCategories().stream().map(categoryService::convertToDto).toList());
+        if(authorService != null) {
+            bookDto.setAuthors(book.getAuthors().stream().map(authorService::convertToDto).toList());
+        }
+        if(categoryService != null) {
+            bookDto.setCategories(book.getCategories().stream().map(categoryService::convertToDto).toList());
+        }
+        if(libraryService != null) {
+            bookDto.setLibraries(book.getLibraries().stream().map(libraryService::convertToDto).toList());
+        }
         if(book.getPictures() != null){
             bookDto.setPictures(book.getPictures().stream().map(pictureService::convertToDto).toList());
         }
@@ -206,6 +231,6 @@ public class BookService implements IBookService{
         }
         Pageable pageable = PageRequest.of(searchRequest.getPageNumber(), searchRequest.getPageSize());
         Page<Book> books = bookRepos.findAll(specBook, pageable);
-        return books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService())).collect(Collectors.toSet());
+        return books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService(),null)).collect(Collectors.toSet());
     }
 }

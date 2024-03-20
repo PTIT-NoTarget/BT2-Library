@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,20 +54,19 @@ public class LibraryService implements ILibraryService {
     }
     @Override
     public Set<LibraryDto> getAllLibrary() {
-        return libraryRepos.findAll().stream().map(library -> convertToDto(library, new BookService())).collect(Collectors.toSet());
+        return libraryRepos.findAll().stream().map(this::convertToDto).collect(Collectors.toSet());
     }
 
     @Override
     public LibraryDto getLibraryById(int id) {
-        return convertToDto(libraryRepos.findById(id).get(), new BookService());
+        return convertToDto(libraryRepos.findById(id).get());
     }
 
-    public LibraryDto convertToDto(Library library, IBookService bookService) {
+    public LibraryDto convertToDto(Library library) {
         LibraryDto libraryDto = new LibraryDto();
         libraryDto.setId(library.getId());
         libraryDto.setName(library.getName());
         libraryDto.setAddress(library.getAddress());
-        //libraryDto.setBooks(library.getBooks().stream().map(book -> bookService.convertToDto(book, new AuthorService(), new CategoryService(), new PictureService())).toList());
         return libraryDto;
     }
 
@@ -89,14 +85,15 @@ public class LibraryService implements ILibraryService {
             book.setNumOfPage(bookRequest.getNumOfPage());
             book.setAuthors(bookRequest.getAuthorIds().stream().map(authorMap::get).collect(Collectors.toSet()));
             book.setCategories(bookRequest.getCategoryIds().stream().map(categoryMap::get).collect(Collectors.toSet()));
-            book.setPictures(bookRequest.getPictureUrls().stream().map(url -> {
+            List<Picture> pictures = bookRequest.getPictureUrls().stream().map(url -> {
                 Picture picture = new Picture();
                 picture.setUrl(url);
-                return pictureRepos.save(picture);
-            }).collect(Collectors.toSet()));
-            return bookRepos.save(book);
+                return picture;
+            }).collect(Collectors.toList());
+            book.setPictures(new HashSet<>(pictureRepos.saveAll(pictures)));
+            return book;
         }).collect(Collectors.toSet());
-        library.setBooks(books);
+        library.setBooks(new HashSet<>(bookRepos.saveAll(books)));
         libraryRepos.save(library);
     }
     private Timestamp convertStringToTimestamp(String strDate) {

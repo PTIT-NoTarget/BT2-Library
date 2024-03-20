@@ -10,7 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class BookByLibraryResponse {
+public class BookResponse {
     int totalPage;
     long totalElement;
     Set<BookDto> books;

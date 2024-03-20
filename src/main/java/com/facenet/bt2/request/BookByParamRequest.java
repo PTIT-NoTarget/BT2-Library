@@ -7,8 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class BookByLibraryRequest {
+public class BookByParamRequest {
     private int pageNumber;
     private int pageSize;
-    private int libraryId;
 }

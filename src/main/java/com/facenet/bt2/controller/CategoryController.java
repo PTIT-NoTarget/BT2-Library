@@ -25,7 +25,9 @@ public class CategoryController {
     private CategoryRepos categoryRepos;
     @PostMapping("/add")
     public ResponseEntity<String> addLibrary(@RequestBody CategoryRequest categoryRequest) {
-        if(categoryRequest.getName() == null || categoryRequest.getName().isEmpty()) {
+        if(categoryRequest.getName() == null || categoryRequest.getName().isEmpty()
+        || categoryRequest.getDescription() == null || categoryRequest.getDescription().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add category request");
         }
         categoryService.addCategory(categoryRequest);
@@ -34,7 +36,9 @@ public class CategoryController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateLibrary(@PathVariable int id, @RequestBody CategoryRequest categoryRequest) {
-        if(categoryRequest.getName() == null || categoryRequest.getName().isEmpty()) {
+        if(categoryRequest.getName() == null || categoryRequest.getName().isEmpty()
+        || categoryRequest.getDescription() == null || categoryRequest.getDescription().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update category request");
         }
         if(categoryRepos.findById(id).isPresent()) {

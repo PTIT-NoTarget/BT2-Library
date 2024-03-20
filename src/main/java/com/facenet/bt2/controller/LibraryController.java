@@ -26,7 +26,9 @@ public class LibraryController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addLibrary(@RequestBody LibraryRequest libraryRequest) {
-        if(libraryRequest.getName() == null || libraryRequest.getName().isEmpty()) {
+        if(libraryRequest.getName() == null || libraryRequest.getName().isEmpty()
+        || libraryRequest.getAddress() == null || libraryRequest.getAddress().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add library request");
         }
         libraryService.addLibrary(libraryRequest);
@@ -35,7 +37,9 @@ public class LibraryController {
 
     @PostMapping("/add-with-book")
     public ResponseEntity<String> addLibraryWithBook(@RequestBody AddLibraryWithBookRequest library) {
-        if (library.getName() == null || library.getName().isEmpty() || library.getAddress() == null || library.getAddress().isEmpty()) {
+        if (library.getName() == null || library.getName().isEmpty()
+        || library.getAddress() == null || library.getAddress().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add library with book request");
         }
         if(library.getBooks() == null || library.getBooks().isEmpty()) {
@@ -51,7 +55,9 @@ public class LibraryController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateLibrary(@PathVariable int id, @RequestBody LibraryRequest libraryRequest) {
-        if(libraryRequest.getName() == null || libraryRequest.getName().isEmpty()) {
+        if(libraryRequest.getName() == null || libraryRequest.getName().isEmpty()
+        || libraryRequest.getAddress() == null || libraryRequest.getAddress().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update library request");
         }
         if(libraryRepos.findById(id).isPresent()) {

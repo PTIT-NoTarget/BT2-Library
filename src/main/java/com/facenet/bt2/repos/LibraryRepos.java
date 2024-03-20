@@ -18,7 +18,7 @@ public interface LibraryRepos extends JpaRepository<Library, Integer> {
                     "books",
                     "books.authors",
                     "books.categories",
-                    "books.pictures"
+                    "books.pictures",
             }
     )
     Optional<Library> findById(int id);

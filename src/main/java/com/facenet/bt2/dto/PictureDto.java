@@ -14,5 +14,4 @@ import lombok.*;
 public class PictureDto {
     private int id;
     private String url;
-    private String description;
 }

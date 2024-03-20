@@ -18,4 +18,5 @@ public class BookDto {
     private List<PictureDto> pictures;
     private List<CategoryDto> categories;
     private List<AuthorDto> authors;
+    private List<LibraryDto> libraries;
 }
