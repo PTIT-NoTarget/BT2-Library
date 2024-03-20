@@ -6,18 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LibraryRepos extends JpaRepository<Library, Integer> {
-    @EntityGraph(
-            type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {
-                    "books",
-                    "books.authors",
-                    "books.categories",
-                    "books.pictures"
-            }
-    )
     List<Library> findAll();
 
     @EntityGraph(
@@ -29,5 +21,5 @@ public interface LibraryRepos extends JpaRepository<Library, Integer> {
                     "books.pictures"
             }
     )
-    Library findById(int id);
+    Optional<Library> findById(int id);
 }

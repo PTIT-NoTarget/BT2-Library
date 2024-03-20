@@ -15,4 +15,5 @@ public class SearchRequest {
     private String numOfPage;
     private String author;
     private String category;
+    private int libraryId;
 }

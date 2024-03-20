@@ -45,7 +45,7 @@ public class LibraryService implements ILibraryService {
 
     @Override
     public void updateLibrary(int id, LibraryRequest libraryRequest) {
-        Library library = libraryRepos.findById(id);
+        Library library = libraryRepos.findById(id).get();
         library.setName(libraryRequest.getName());
         library.setAddress(libraryRequest.getAddress());
         libraryRepos.save(library);
@@ -62,7 +62,7 @@ public class LibraryService implements ILibraryService {
 
     @Override
     public LibraryDto getLibraryById(int id) {
-        return convertToDto(libraryRepos.findById(id), new BookService());
+        return convertToDto(libraryRepos.findById(id).get(), new BookService());
     }
 
     public LibraryDto convertToDto(Library library, IBookService bookService) {

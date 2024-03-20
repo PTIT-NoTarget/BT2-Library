@@ -13,5 +13,4 @@ public class LibraryDto {
     private int id;
     private String name;
     private String address;
-    private List<BookDto> books;
 }

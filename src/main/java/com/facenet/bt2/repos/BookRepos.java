@@ -10,13 +10,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BookRepos extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"authors", "categories", "libraries", "pictures"})
     Page<Book> findAll(Specification<Book> specBook, Pageable pageable);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"authors", "categories", "libraries", "pictures"})
-    Book findById(int id);
+    Optional<Book> findById(int id);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"authors", "categories", "libraries", "pictures"})
     Page<Book> findAllByLibraries(Library library, Pageable pageable);

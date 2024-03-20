@@ -59,7 +59,7 @@ public class BookService implements IBookService{
         book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
         book.setNumOfPage(bookRequest.getNumOfPage());
         Set<Library> libraries = new HashSet<>();
-        libraries.add(libraryRepos.findById(bookRequest.getLibraryId()));
+        libraries.add(libraryRepos.findById(bookRequest.getLibraryId()).get());
         book.setLibraries(libraries);
         List<Author> authorList = authorRepos.findAllById(bookRequest.getAuthorIds());
         Set<Author> authors = new HashSet<>(authorList);
@@ -78,7 +78,7 @@ public class BookService implements IBookService{
 
     @Override
     public void updateBook(int id, BookRequest bookRequest) {
-        Book book = bookRepos.findById(id);
+        Book book = bookRepos.findById(id).get();
         book.setIsbn(bookRequest.getIsbn());
         book.setName(bookRequest.getName());
         book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
@@ -162,7 +162,7 @@ public class BookService implements IBookService{
     public BookByLibraryResponse getAllBooksByLibraryId(BookByLibraryRequest bookByLibraryRequest) {
         BookByLibraryResponse bookByLibraryResponse = new BookByLibraryResponse();
         Pageable pageable = PageRequest.of(bookByLibraryRequest.getPageNumber(), bookByLibraryRequest.getPageSize());
-        Page<Book> books = bookRepos.findAllByLibraries(libraryRepos.findById(bookByLibraryRequest.getLibraryId()), pageable);
+        Page<Book> books = bookRepos.findAllByLibraries(libraryRepos.findById(bookByLibraryRequest.getLibraryId()).get(), pageable);
         bookByLibraryResponse.setBooks(books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService())).collect(Collectors.toSet()));
         bookByLibraryResponse.setTotalPage(books.getTotalPages());
         bookByLibraryResponse.setTotalElement(books.getTotalElements());
