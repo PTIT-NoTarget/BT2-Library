@@ -1,5 +1,6 @@
 package com.facenet.bt2.controller;
 
+import com.facenet.bt2.dto.CategoryDto;
 import com.facenet.bt2.repos.CategoryRepos;
 import com.facenet.bt2.request.CategoryRequest;
 import com.facenet.bt2.request.LibraryRequest;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -21,7 +24,7 @@ public class CategoryController {
     @Autowired
     private CategoryRepos categoryRepos;
     @PostMapping("/add")
-    public ResponseEntity<?> addLibrary(@RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<String> addLibrary(@RequestBody CategoryRequest categoryRequest) {
         if(categoryRequest.getName() == null || categoryRequest.getName().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add category request");
         }
@@ -30,7 +33,7 @@ public class CategoryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateLibrary(@PathVariable int id, @RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<String> updateLibrary(@PathVariable int id, @RequestBody CategoryRequest categoryRequest) {
         if(categoryRequest.getName() == null || categoryRequest.getName().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update category request");
         }
@@ -42,7 +45,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteLibrary(@PathVariable int id) {
+    public ResponseEntity<String> deleteLibrary(@PathVariable int id) {
         if (categoryRepos.findById(id).isPresent()) {
             categoryService.deleteCategory(id);
             return ResponseEntity.ok("Delete category success");
@@ -51,7 +54,7 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllLibrary() {
+    public ResponseEntity<Set<CategoryDto>> getAllLibrary() {
         return ResponseEntity.ok(categoryService.getAllCategory());
     }
 

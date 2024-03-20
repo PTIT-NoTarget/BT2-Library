@@ -21,7 +21,7 @@ public class PictureController {
     private ICloudinaryService cloudinaryService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadPicture(@ModelAttribute UploadPictureRequest picture) {
+    public ResponseEntity<String> uploadPicture(@ModelAttribute UploadPictureRequest picture) {
         return new ResponseEntity<>(cloudinaryService.uploadImage(picture.getPicture(), picture.getFolder()), HttpStatus.OK);
     }
 }

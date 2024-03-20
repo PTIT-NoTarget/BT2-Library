@@ -1,17 +1,21 @@
 package com.facenet.bt2.controller;
 
+import com.facenet.bt2.dto.BookDto;
 import com.facenet.bt2.repos.BookRepos;
 import com.facenet.bt2.repos.LibraryRepos;
 import com.facenet.bt2.request.AddLibraryWithBookRequest;
 import com.facenet.bt2.request.BookByLibraryRequest;
 import com.facenet.bt2.request.BookRequest;
 import com.facenet.bt2.request.SearchRequest;
+import com.facenet.bt2.response.BookByLibraryResponse;
 import com.facenet.bt2.service.IBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/book")
@@ -36,7 +40,7 @@ public class BookController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addBook(@RequestBody BookRequest bookRequest) {
+    public ResponseEntity<String> addBook(@RequestBody BookRequest bookRequest) {
         if(isValidateBookRequest(bookRequest)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add book request");
         }
@@ -45,7 +49,7 @@ public class BookController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable int id, @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<String> updateBook(@PathVariable int id, @RequestBody BookRequest bookRequest) {
         if(isValidateBookRequest(bookRequest)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update book request");
         }
@@ -57,7 +61,7 @@ public class BookController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable int id) {
+    public ResponseEntity<String> deleteBook(@PathVariable int id) {
         if(bookRepos.findById(id).isPresent()) {
             bookService.deleteBook(id);
             return ResponseEntity.ok("Delete book success");
@@ -75,15 +79,15 @@ public class BookController {
 //    }
 
     @GetMapping("/get-all-by-library")
-    public ResponseEntity<?> getAllBooksByLibraryId(@RequestBody BookByLibraryRequest bookByLibraryRequest) {
+    public ResponseEntity<BookByLibraryResponse> getAllBooksByLibraryId(@RequestBody BookByLibraryRequest bookByLibraryRequest) {
         if(libraryRepos.findById(bookByLibraryRequest.getLibraryId()).isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Library not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(bookService.getAllBooksByLibraryId(bookByLibraryRequest), HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchBook(@RequestBody SearchRequest searchRequest) {
+    public ResponseEntity<Set<BookDto>> searchBook(@RequestBody SearchRequest searchRequest) {
         return new ResponseEntity<>(bookService.searchBook(searchRequest), HttpStatus.OK);
     }
 }

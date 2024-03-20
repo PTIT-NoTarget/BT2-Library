@@ -1,5 +1,6 @@
 package com.facenet.bt2.controller;
 
+import com.facenet.bt2.dto.AuthorDto;
 import com.facenet.bt2.repos.AuthorRepos;
 import com.facenet.bt2.request.AuthorRequest;
 import com.facenet.bt2.request.BookRequest;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/author")
@@ -22,8 +25,10 @@ public class AuthorController {
     private AuthorRepos authorRepos;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addBook(@RequestBody AuthorRequest authorRequest) {
-        if(authorRequest.getName() == null || authorRequest.getName().isEmpty()) {
+    public ResponseEntity<String> addBook(@RequestBody AuthorRequest authorRequest) {
+        if(authorRequest.getName() == null || authorRequest.getName().isEmpty()
+                || authorRequest.getDob() == null || authorRequest.getDob().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add author request");
         }
         authorService.addAuthor(authorRequest);
@@ -31,8 +36,10 @@ public class AuthorController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable int id, @RequestBody AuthorRequest authorRequest) {
-        if(authorRequest.getName() == null || authorRequest.getName().isEmpty()) {
+    public ResponseEntity<String> updateBook(@PathVariable int id, @RequestBody AuthorRequest authorRequest) {
+        if(authorRequest.getName() == null || authorRequest.getName().isEmpty()
+        || authorRequest.getDob() == null || authorRequest.getDob().isEmpty()
+        ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid update author request");
         }
         if(authorRepos.findById(id).isPresent()) {
@@ -43,7 +50,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable int id) {
+    public ResponseEntity<String> deleteBook(@PathVariable int id) {
         if (authorRepos.findById(id).isPresent()) {
             authorService.deleteAuthor(id);
             return ResponseEntity.ok("Delete author success");
@@ -52,7 +59,7 @@ public class AuthorController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllBook() {
+    public ResponseEntity<Set<AuthorDto>> getAllBook() {
         return ResponseEntity.ok(authorService.getAllAuthor());
     }
 
