@@ -107,50 +107,50 @@ public class BookService implements IBookService{
         bookRepos.deleteById(id);
     }
 
-    private String generateRandomString(int length) {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder stringBuilder = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = random.nextInt(characters.length());
-            stringBuilder.append(characters.charAt(randomIndex));
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private void fakeData(){
-        for(int i = 0; i < 10000; i++) {
-            Book book = new Book();
-            Random random = new Random();
-            book.setIsbn(random.nextInt(10000000) + "");
-            book.setName(generateRandomString(20));
-            book.setDateOfPublic(new Timestamp(System.currentTimeMillis()));
-            book.setNumOfPage(100 + random.nextInt(100));
-            Set<Library> libraries = new HashSet<>();
-            for(int j = 0; j < random.nextInt(5) + 1; j++){
-                libraries.add(libraryRepos.findById(random.nextInt(10) + 1));
-            }
-            book.setLibraries(libraries);
-            Set<Author> authors = new HashSet<>();
-            for(int j = 0; j < random.nextInt(3) + 1; j++){
-                authors.add(authorRepos.findById(random.nextInt(10) + 1).get());
-            }
-            book.setAuthors(authors);
-            Set<Category> categories = new HashSet<>();
-            for(int j = 0; j < random.nextInt(4) + 1; j++){
-                categories.add(categoryRepos.findById(random.nextInt(10) + 1).get());
-            }
-            book.setCategories(categories);
-            Picture picture = new Picture();
-            picture.setUrl("http://res.cloudinary.com/dwfqbhqcr/image/upload/v1710868751/library/cover%2C/e3zb4oc6exzx8xtsdb9b.jpg");
-            Set<Picture> pictures = new HashSet<>();
-            pictures.add(pictureRepos.save(picture));
-            book.setPictures(pictures);
-            bookRepos.save(book);
-        }
-    }
+//    private String generateRandomString(int length) {
+//        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//        Random random = new Random();
+//        StringBuilder stringBuilder = new StringBuilder(length);
+//
+//        for (int i = 0; i < length; i++) {
+//            int randomIndex = random.nextInt(characters.length());
+//            stringBuilder.append(characters.charAt(randomIndex));
+//        }
+//
+//        return stringBuilder.toString();
+//    }
+//
+//    private void fakeData(){
+//        for(int i = 0; i < 10000; i++) {
+//            Book book = new Book();
+//            Random random = new Random();
+//            book.setIsbn(random.nextInt(10000000) + "");
+//            book.setName(generateRandomString(20));
+//            book.setDateOfPublic(new Timestamp(System.currentTimeMillis()));
+//            book.setNumOfPage(100 + random.nextInt(100));
+//            Set<Library> libraries = new HashSet<>();
+//            for(int j = 0; j < random.nextInt(5) + 1; j++){
+//                libraries.add(libraryRepos.findById(random.nextInt(10) + 1));
+//            }
+//            book.setLibraries(libraries);
+//            Set<Author> authors = new HashSet<>();
+//            for(int j = 0; j < random.nextInt(3) + 1; j++){
+//                authors.add(authorRepos.findById(random.nextInt(10) + 1).get());
+//            }
+//            book.setAuthors(authors);
+//            Set<Category> categories = new HashSet<>();
+//            for(int j = 0; j < random.nextInt(4) + 1; j++){
+//                categories.add(categoryRepos.findById(random.nextInt(10) + 1).get());
+//            }
+//            book.setCategories(categories);
+//            Picture picture = new Picture();
+//            picture.setUrl("http://res.cloudinary.com/dwfqbhqcr/image/upload/v1710868751/library/cover%2C/e3zb4oc6exzx8xtsdb9b.jpg");
+//            Set<Picture> pictures = new HashSet<>();
+//            pictures.add(pictureRepos.save(picture));
+//            book.setPictures(pictures);
+//            bookRepos.save(book);
+//        }
+//    }
 
     @Override
     public Set<BookDto> getAllBooks() {
@@ -160,7 +160,6 @@ public class BookService implements IBookService{
 
     @Override
     public BookByLibraryResponse getAllBooksByLibraryId(BookByLibraryRequest bookByLibraryRequest) {
-        fakeData();
         BookByLibraryResponse bookByLibraryResponse = new BookByLibraryResponse();
         Pageable pageable = PageRequest.of(bookByLibraryRequest.getPageNumber(), bookByLibraryRequest.getPageSize());
         Page<Book> books = bookRepos.findAllByLibraries(libraryRepos.findById(bookByLibraryRequest.getLibraryId()), pageable);

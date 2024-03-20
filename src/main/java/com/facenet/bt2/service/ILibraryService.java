@@ -16,5 +16,5 @@ public interface ILibraryService {
     LibraryDto getLibraryById(int id);
     LibraryDto convertToDto(Library library, IBookService bookService);
 
-    void addLibraryWithBook(AddLibraryWithBookRequest library);
+    void addLibraryWithBook(AddLibraryWithBookRequest addLibraryWithBookRequest);
 }

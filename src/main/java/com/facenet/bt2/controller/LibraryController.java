@@ -24,7 +24,7 @@ public class LibraryController {
     }
 
     @PostMapping("/add-with-book")
-    public ResponseEntity<?> addLibraryWithBook(@ModelAttribute AddLibraryWithBookRequest library) {
+    public ResponseEntity<?> addLibraryWithBook(@RequestBody AddLibraryWithBookRequest library) {
         libraryService.addLibraryWithBook(library);
         return ResponseEntity.ok("Add library with book success");
     }

@@ -26,7 +26,7 @@ public class BookController {
     }
 
     @PostMapping("/test")
-    public ResponseEntity<?> test(@ModelAttribute AddLibraryWithBookRequest addLibraryWithBookRequest) {
+    public ResponseEntity<?> test(@RequestBody AddLibraryWithBookRequest addLibraryWithBookRequest) {
         System.out.println(addLibraryWithBookRequest);
         for(var i : addLibraryWithBookRequest.getBooks()) {
             System.out.println(i);

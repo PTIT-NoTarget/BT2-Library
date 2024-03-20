@@ -1,5 +1,6 @@
 package com.facenet.bt2.request;
 
+import com.facenet.bt2.dto.BookDto;
 import lombok.*;
 
 import java.util.List;
@@ -11,6 +12,5 @@ import java.util.List;
 public class AddLibraryWithBookRequest {
     String name;
     String address;
-    List<String> books;
-    //List<BookDto> books;
+    List<BookRequest> books;
 }
