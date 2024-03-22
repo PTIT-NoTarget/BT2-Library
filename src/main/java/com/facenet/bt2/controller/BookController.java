@@ -38,8 +38,8 @@ public class BookController {
             || bookRequest.getName() == null || bookRequest.getName().isEmpty()
             || bookRequest.getDateOfPublic() == null || bookRequest.getDateOfPublic().isEmpty()
             || bookRequest.getNumPageOfBook() <= 0
-            || bookRequest.getAuthorIds() == null || bookRequest.getAuthorIds().isEmpty()
-            || bookRequest.getCategoryIds() == null || bookRequest.getCategoryIds().isEmpty()
+//            || bookRequest.getAuthorIds() == null || bookRequest.getAuthorIds().isEmpty()
+//            || bookRequest.getCategoryIds() == null || bookRequest.getCategoryIds().isEmpty()
             || bookRequest.getPictureUrls() == null || bookRequest.getPictureUrls().isEmpty();
     }
 
@@ -117,5 +117,10 @@ public class BookController {
     @GetMapping("/search")
     public ResponseEntity<Set<BookDto>> searchBook(@RequestBody SearchRequest searchRequest) {
         return new ResponseEntity<>(bookService.searchBook(searchRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/search-by-input")
+    public ResponseEntity<Set<BookDto>> searchBookByInput(@RequestParam("input") String input) {
+        return new ResponseEntity<>(bookService.searchBookByInput(input), HttpStatus.OK);
     }
 }

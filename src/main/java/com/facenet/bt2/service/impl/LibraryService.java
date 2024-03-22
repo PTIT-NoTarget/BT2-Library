@@ -70,6 +70,7 @@ public class LibraryService implements ILibraryService {
         return libraryDto;
     }
 
+
     @Override
     public void addLibraryWithBook(AddLibraryWithBookRequest addLibraryWithBookRequest) {
         Map<Integer, Author> authorMap = authorRepos.findAll().stream().collect(Collectors.toMap(Author::getId, author -> author));
@@ -83,8 +84,8 @@ public class LibraryService implements ILibraryService {
             book.setName(bookRequest.getName());
             book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
             book.setNumOfPage(bookRequest.getNumPageOfBook());
-            book.setAuthors(bookRequest.getAuthorIds().stream().map(authorMap::get).collect(Collectors.toSet()));
-            book.setCategories(bookRequest.getCategoryIds().stream().map(categoryMap::get).collect(Collectors.toSet()));
+//            book.setAuthors(bookRequest.getAuthorIds().stream().map(authorMap::get).collect(Collectors.toSet()));
+//            book.setCategories(bookRequest.getCategoryIds().stream().map(categoryMap::get).collect(Collectors.toSet()));
             List<Picture> pictures = bookRequest.getPictureUrls().stream().map(url -> {
                 Picture picture = new Picture();
                 picture.setUrl(url);

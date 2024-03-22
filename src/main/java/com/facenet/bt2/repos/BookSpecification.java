@@ -33,4 +33,9 @@ public class BookSpecification {
             return cb.like(cb.lower(bookCategoryJoin.get("name")), "%" + category.toLowerCase() + "%");
         };
     }
+
+    public static Specification<Book> hasInput(String input) {
+        return Specification.where(hasIsbn(input))
+                .or(hasName(input));
+    }
 }

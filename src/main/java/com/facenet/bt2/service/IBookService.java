@@ -16,6 +16,6 @@ public interface IBookService {
     BookResponse getAllBooksByCategoryId(int categoryId, int pageNumber, int pageSize);
     BookResponse getAllBooksByAuthorId(int authorId, int pageNumber, int pageSize);
     BookDto convertToDto(Book book, IAuthorService authorService, ICategoryService categoryService, IPictureService pictureService, ILibraryService libraryService);
-
     Set<BookDto> searchBook(SearchRequest searchRequest);
+    Set<BookDto> searchBookByInput(String input);
 }

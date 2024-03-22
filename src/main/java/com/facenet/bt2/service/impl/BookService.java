@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -50,53 +51,53 @@ public class BookService implements IBookService{
 
     @Override
     public void addBook(BookRequest bookRequest) {
-        Book book = new Book();
-        book.setIsbn(bookRequest.getIsbn());
-        book.setName(bookRequest.getName());
-        book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
-        book.setNumOfPage(bookRequest.getNumPageOfBook());
-        Set<Library> libraries = new HashSet<>();
-        libraries.add(libraryRepos.findById(bookRequest.getLibraryId()).get());
-        book.setLibraries(libraries);
-        List<Author> authorList = authorRepos.findAllById(bookRequest.getAuthorIds());
-        Set<Author> authors = new HashSet<>(authorList);
-        book.setAuthors(authors);
-        List<Category> categoryList = categoryRepos.findAllById(bookRequest.getCategoryIds());
-        Set<Category> categories = new HashSet<>(categoryList);
-        book.setCategories(categories);
-        Set<Picture> pictures = new HashSet<>(bookRequest.getPictureUrls().stream().map(url -> {
-            Picture picture = new Picture();
-            picture.setUrl(url);
-            return picture;
-        }).toList());
-        book.setPictures(pictures);
-        bookRepos.save(book);
+//        Book book = new Book();
+//        book.setIsbn(bookRequest.getIsbn());
+//        book.setName(bookRequest.getName());
+//        book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
+//        book.setNumOfPage(bookRequest.getNumPageOfBook());
+//        Set<Library> libraries = new HashSet<>();
+//        libraries.add(libraryRepos.findById(bookRequest.getLibraryId()).get());
+//        book.setLibraries(libraries);
+//        List<Author> authorList = authorRepos.findAllById(bookRequest.getAuthorIds());
+//        Set<Author> authors = new HashSet<>(authorList);
+//        book.setAuthors(authors);
+//        List<Category> categoryList = categoryRepos.findAllById(bookRequest.getCategoryIds());
+//        Set<Category> categories = new HashSet<>(categoryList);
+//        book.setCategories(categories);
+//        Set<Picture> pictures = new HashSet<>(bookRequest.getPictureUrls().stream().map(url -> {
+//            Picture picture = new Picture();
+//            picture.setUrl(url);
+//            return picture;
+//        }).toList());
+//        book.setPictures(pictures);
+//        bookRepos.save(book);
     }
 
     @Override
     public void updateBook(int id, BookRequest bookRequest) {
-        Book book = bookRepos.findById(id).get();
-        book.setIsbn(bookRequest.getIsbn());
-        book.setName(bookRequest.getName());
-        book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
-        book.setNumOfPage(bookRequest.getNumPageOfBook());
-        List<Author> authorList = authorRepos.findAllById(bookRequest.getAuthorIds());
-        Set<Author> authors = new HashSet<>(authorList);
-        book.setAuthors(authors);
-        Set<Category> categories = book.getCategories();
-        if(categories == null) categories = new HashSet<>();
-        List<Category> categoryList = categoryRepos.findAllById(bookRequest.getCategoryIds());
-        categories.addAll(categoryList);
-        book.setCategories(categories);
-        Set<Picture> pictures = book.getPictures();
-        if(pictures == null) pictures = new HashSet<>();
-        pictures.addAll(bookRequest.getPictureUrls().stream().map(url -> {
-            Picture picture = new Picture();
-            picture.setUrl(url);
-            return picture;
-        }).toList());
-        book.setPictures(pictures);
-        bookRepos.save(book);
+//        Book book = bookRepos.findById(id).get();
+//        book.setIsbn(bookRequest.getIsbn());
+//        book.setName(bookRequest.getName());
+//        book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
+//        book.setNumOfPage(bookRequest.getNumPageOfBook());
+//        List<Author> authorList = authorRepos.findAllById(bookRequest.getAuthorIds());
+//        Set<Author> authors = new HashSet<>(authorList);
+//        book.setAuthors(authors);
+//        Set<Category> categories = book.getCategories();
+//        if(categories == null) categories = new HashSet<>();
+//        List<Category> categoryList = categoryRepos.findAllById(bookRequest.getCategoryIds());
+//        categories.addAll(categoryList);
+//        book.setCategories(categories);
+//        Set<Picture> pictures = book.getPictures();
+//        if(pictures == null) pictures = new HashSet<>();
+//        pictures.addAll(bookRequest.getPictureUrls().stream().map(url -> {
+//            Picture picture = new Picture();
+//            picture.setUrl(url);
+//            return picture;
+//        }).toList());
+//        book.setPictures(pictures);
+//        bookRepos.save(book);
     }
 
     @Override
@@ -187,5 +188,13 @@ public class BookService implements IBookService{
         Pageable pageable = PageRequest.of(searchRequest.getPageNumber(), searchRequest.getPageSize());
         Page<Book> books = bookRepos.findAll(specBook, pageable);
         return books.stream().map(book -> convertToDto(book, new AuthorService(), new CategoryService(), new PictureService(),null)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<BookDto> searchBookByInput(String input) {
+        Specification<Book> specBook = Specification.where(null);
+        specBook = specBook.and(BookSpecification.hasInput(input));
+        List<Book> books = bookRepos.findAll(specBook, Sort.by("name"));
+        return books.stream().map(book -> convertToDto(book, null, null, new PictureService(),null)).collect(Collectors.toSet());
     }
 }
