@@ -13,6 +13,6 @@ import java.util.List;
 public class AddLibraryWithBookRequest {
     String name;
     String address;
-    List<BookRequest> existedBooks;
+    List<Integer> existedBookIds;
     List<BookRequest> newBooks;
 }
