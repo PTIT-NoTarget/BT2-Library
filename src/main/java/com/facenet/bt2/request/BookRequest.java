@@ -21,7 +21,7 @@ public class BookRequest {
     private String dateOfPublic;
     private int numPageOfBook;
     private List<String> pictureUrls;
-    private List<Integer>  authorIds;
-    private List<Integer> categoryIds;
+    private List<String>  authorNames;
+    private List<String> categoryNames;
     private int libraryId;
 }
