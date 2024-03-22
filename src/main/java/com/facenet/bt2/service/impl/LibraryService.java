@@ -77,12 +77,12 @@ public class LibraryService implements ILibraryService {
         Library library = new Library();
         library.setName(addLibraryWithBookRequest.getName());
         library.setAddress(addLibraryWithBookRequest.getAddress());
-        Set<Book> books = addLibraryWithBookRequest.getBooks().stream().map(bookRequest -> {
+        Set<Book> books = addLibraryWithBookRequest.getNewBooks().stream().map(bookRequest -> {
             Book book = new Book();
             book.setIsbn(bookRequest.getIsbn());
             book.setName(bookRequest.getName());
             book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
-            book.setNumOfPage(bookRequest.getNumOfPage());
+            book.setNumOfPage(bookRequest.getNumPageOfBook());
             book.setAuthors(bookRequest.getAuthorIds().stream().map(authorMap::get).collect(Collectors.toSet()));
             book.setCategories(bookRequest.getCategoryIds().stream().map(categoryMap::get).collect(Collectors.toSet()));
             List<Picture> pictures = bookRequest.getPictureUrls().stream().map(url -> {

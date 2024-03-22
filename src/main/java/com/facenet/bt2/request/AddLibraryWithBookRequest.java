@@ -13,5 +13,6 @@ import java.util.List;
 public class AddLibraryWithBookRequest {
     String name;
     String address;
-    List<BookRequest> books;
+    List<BookRequest> existedBooks;
+    List<BookRequest> newBooks;
 }

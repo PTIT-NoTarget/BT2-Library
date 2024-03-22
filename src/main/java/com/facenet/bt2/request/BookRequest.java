@@ -15,10 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class BookRequest {
+    private int id;
     private String isbn;
     private String name;
     private String dateOfPublic;
-    private int numOfPage;
+    private int numPageOfBook;
     private List<String> pictureUrls;
     private List<Integer>  authorIds;
     private List<Integer> categoryIds;

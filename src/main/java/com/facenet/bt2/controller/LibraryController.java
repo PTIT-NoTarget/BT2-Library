@@ -42,7 +42,7 @@ public class LibraryController {
         ) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid add library with book request");
         }
-        if(library.getBooks() == null || library.getBooks().isEmpty()) {
+        if(library.getNewBooks() == null || library.getNewBooks().isEmpty()) {
             LibraryRequest libraryRequest = new LibraryRequest();
             libraryRequest.setName(library.getName());
             libraryRequest.setAddress(library.getAddress());

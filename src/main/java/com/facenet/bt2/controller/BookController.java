@@ -37,7 +37,7 @@ public class BookController {
         return bookRequest.getIsbn() == null || bookRequest.getIsbn().isEmpty()
             || bookRequest.getName() == null || bookRequest.getName().isEmpty()
             || bookRequest.getDateOfPublic() == null || bookRequest.getDateOfPublic().isEmpty()
-            || bookRequest.getNumOfPage() <= 0
+            || bookRequest.getNumPageOfBook() <= 0
             || bookRequest.getAuthorIds() == null || bookRequest.getAuthorIds().isEmpty()
             || bookRequest.getCategoryIds() == null || bookRequest.getCategoryIds().isEmpty()
             || bookRequest.getPictureUrls() == null || bookRequest.getPictureUrls().isEmpty();
