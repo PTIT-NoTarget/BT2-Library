@@ -70,22 +70,35 @@ public class LibraryService implements ILibraryService {
         return libraryDto;
     }
 
-
-    @Override
-    public void addLibraryWithBook(AddLibraryWithBookRequest addLibraryWithBookRequest) {
-        Map<Integer, Author> authorMap = authorRepos.findAll().stream().collect(Collectors.toMap(Author::getId, author -> author));
-        Map<Integer, Category> categoryMap = categoryRepos.findAll().stream().collect(Collectors.toMap(Category::getId, category -> category));
-        Library library = new Library();
+    private void addNewBooks(AddLibraryWithBookRequest addLibraryWithBookRequest, Library library){
+        Map<String, Author> authorMap = authorRepos.findAll().stream().collect(Collectors.toMap(Author::getName, author -> author));
+        Map<String, Category> categoryMap = categoryRepos.findAll().stream().collect(Collectors.toMap(Category::getName, category -> category));
         library.setName(addLibraryWithBookRequest.getName());
         library.setAddress(addLibraryWithBookRequest.getAddress());
         Set<Book> books = addLibraryWithBookRequest.getNewBooks().stream().map(bookRequest -> {
             Book book = new Book();
             book.setIsbn(bookRequest.getIsbn());
             book.setName(bookRequest.getName());
-            book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
+            book.setDateOfPublic(bookRequest.getDateOfPublic());
             book.setNumOfPage(bookRequest.getNumPageOfBook());
-//            book.setAuthors(bookRequest.getAuthorIds().stream().map(authorMap::get).collect(Collectors.toSet()));
-//            book.setCategories(bookRequest.getCategoryIds().stream().map(categoryMap::get).collect(Collectors.toSet()));
+            book.setAuthors(bookRequest.getAuthorNames().stream().map(author -> {
+                if(authorMap.containsKey(author)) {
+                    return authorMap.get(author);
+                }
+                Author newAuthor = new Author();
+                newAuthor.setName(author);
+                return authorRepos.save(newAuthor);
+            }).collect(Collectors.toSet()));
+
+            book.setCategories(bookRequest.getCategoryNames().stream().map(category -> {
+                if(categoryMap.containsKey(category)) {
+                    return categoryMap.get(category);
+                }
+                Category newCategory = new Category();
+                newCategory.setName(category);
+                return categoryRepos.save(newCategory);
+            }).collect(Collectors.toSet()));
+
             List<Picture> pictures = bookRequest.getPictureUrls().stream().map(url -> {
                 Picture picture = new Picture();
                 picture.setUrl(url);
@@ -97,14 +110,20 @@ public class LibraryService implements ILibraryService {
         library.setBooks(new HashSet<>(bookRepos.saveAll(books)));
         libraryRepos.save(library);
     }
-    private Timestamp convertStringToTimestamp(String strDate) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(strDate);
-            return new Timestamp(date.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+    private void addExistedBooks(AddLibraryWithBookRequest addLibraryWithBookRequest, Library library){
+        Map<Integer, Book> bookMap = bookRepos.findAll().stream().collect(Collectors.toMap(Book::getId, book -> book));
+        library.setName(addLibraryWithBookRequest.getName());
+        library.setAddress(addLibraryWithBookRequest.getAddress());
+        Set<Book> books = addLibraryWithBookRequest.getExistedBookIds().stream().map(bookMap::get).collect(Collectors.toSet());
+        library.setBooks(books);
+    }
+
+    @Override
+    public void addLibraryWithBook(AddLibraryWithBookRequest addLibraryWithBookRequest) {
+        Library library = new Library();
+        addNewBooks(addLibraryWithBookRequest, library);
+        addExistedBooks(addLibraryWithBookRequest, library);
+        libraryRepos.save(library);
     }
 }

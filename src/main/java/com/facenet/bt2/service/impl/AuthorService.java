@@ -55,7 +55,6 @@ public class AuthorService implements IAuthorService {
 
     @Override
     public Set<AuthorDto> getAllAuthor() {
-        addAuthors();
         return authorRepos.findAll().stream().map(this::convertToDto).collect(Collectors.toSet());
     }
 

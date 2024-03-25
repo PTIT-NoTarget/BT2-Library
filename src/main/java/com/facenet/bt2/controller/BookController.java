@@ -36,10 +36,10 @@ public class BookController {
     private boolean isValidateBookRequest(BookRequest bookRequest) {
         return bookRequest.getIsbn() == null || bookRequest.getIsbn().isEmpty()
             || bookRequest.getName() == null || bookRequest.getName().isEmpty()
-            || bookRequest.getDateOfPublic() == null || bookRequest.getDateOfPublic().isEmpty()
+            || bookRequest.getDateOfPublic() == null
             || bookRequest.getNumPageOfBook() <= 0
-//            || bookRequest.getAuthorIds() == null || bookRequest.getAuthorIds().isEmpty()
-//            || bookRequest.getCategoryIds() == null || bookRequest.getCategoryIds().isEmpty()
+            || bookRequest.getAuthorNames() == null || bookRequest.getAuthorNames().isEmpty()
+            || bookRequest.getCategoryNames() == null || bookRequest.getCategoryNames().isEmpty()
             || bookRequest.getPictureUrls() == null || bookRequest.getPictureUrls().isEmpty();
     }
 

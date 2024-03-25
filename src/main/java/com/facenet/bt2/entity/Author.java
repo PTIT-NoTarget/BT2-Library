@@ -31,16 +31,4 @@ public class Author {
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Library_Author",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "library_id"))
-    private Set<Library> libraries;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Author_Category",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
 }

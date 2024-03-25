@@ -51,27 +51,41 @@ public class BookService implements IBookService{
 
     @Override
     public void addBook(BookRequest bookRequest) {
-//        Book book = new Book();
-//        book.setIsbn(bookRequest.getIsbn());
-//        book.setName(bookRequest.getName());
-//        book.setDateOfPublic(convertStringToTimestamp(bookRequest.getDateOfPublic()));
-//        book.setNumOfPage(bookRequest.getNumPageOfBook());
-//        Set<Library> libraries = new HashSet<>();
-//        libraries.add(libraryRepos.findById(bookRequest.getLibraryId()).get());
-//        book.setLibraries(libraries);
-//        List<Author> authorList = authorRepos.findAllById(bookRequest.getAuthorIds());
-//        Set<Author> authors = new HashSet<>(authorList);
-//        book.setAuthors(authors);
-//        List<Category> categoryList = categoryRepos.findAllById(bookRequest.getCategoryIds());
-//        Set<Category> categories = new HashSet<>(categoryList);
-//        book.setCategories(categories);
-//        Set<Picture> pictures = new HashSet<>(bookRequest.getPictureUrls().stream().map(url -> {
-//            Picture picture = new Picture();
-//            picture.setUrl(url);
-//            return picture;
-//        }).toList());
-//        book.setPictures(pictures);
-//        bookRepos.save(book);
+        Map<String, Author> authorMap = authorRepos.findAll().stream().collect(Collectors.toMap(Author::getName, author -> author));
+        Map<String, Category> categoryMap = categoryRepos.findAll().stream().collect(Collectors.toMap(Category::getName, category -> category));
+        Book book = new Book();
+        book.setIsbn(bookRequest.getIsbn());
+        book.setName(bookRequest.getName());
+        book.setDateOfPublic(bookRequest.getDateOfPublic());
+        book.setNumOfPage(bookRequest.getNumPageOfBook());
+        book.setAuthors(bookRequest.getAuthorNames().stream().map(author -> {
+            if(authorMap.containsKey(author)) {
+                return authorMap.get(author);
+            }
+            Author newAuthor = new Author();
+            newAuthor.setName(author);
+            return authorRepos.save(newAuthor);
+        }).collect(Collectors.toSet()));
+
+        book.setCategories(bookRequest.getCategoryNames().stream().map(category -> {
+            if(categoryMap.containsKey(category)) {
+                return categoryMap.get(category);
+            }
+            Category newCategory = new Category();
+            newCategory.setName(category);
+            return categoryRepos.save(newCategory);
+        }).collect(Collectors.toSet()));
+
+        List<Picture> pictures = bookRequest.getPictureUrls().stream().map(url -> {
+            Picture picture = new Picture();
+            picture.setUrl(url);
+            return picture;
+        }).collect(Collectors.toList());
+        book.setPictures(new HashSet<>(pictureRepos.saveAll(pictures)));
+        Set<Library> libraries = new HashSet<>();
+        libraries.add(libraryRepos.findById(bookRequest.getLibraryId()).get());
+        book.setLibraries(libraries);
+        bookRepos.save(book);
     }
 
     @Override

@@ -26,20 +26,8 @@ public class Category {
     private String description;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Library_Category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "library_id"))
-    private Set<Library> libraries;
-
-    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Book_Category",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Author_Category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> authors;
 }

@@ -7,6 +7,7 @@ import com.facenet.bt2.entity.Library;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
@@ -18,7 +19,7 @@ public class BookRequest {
     private int id;
     private String isbn;
     private String name;
-    private String dateOfPublic;
+    private Timestamp dateOfPublic;
     private int numPageOfBook;
     private List<String> pictureUrls;
     private List<String>  authorNames;
