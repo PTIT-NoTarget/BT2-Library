@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/picture")
 @RequiredArgsConstructor
@@ -21,7 +24,16 @@ public class PictureController {
     private ICloudinaryService cloudinaryService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadPicture(@ModelAttribute UploadPictureRequest picture) {
-        return new ResponseEntity<>(cloudinaryService.uploadImage(picture.getPicture(), picture.getFolder()), HttpStatus.OK);
+    public ResponseEntity<List<String>> uploadPicture(@ModelAttribute UploadPictureRequest picture) {
+        try {
+            List<String> urls = new ArrayList<>();
+            for(MultipartFile file : picture.getPicture()) {
+                urls.add(cloudinaryService.uploadImage(file, picture.getFolder()));
+            }
+            return new ResponseEntity<>(urls, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
