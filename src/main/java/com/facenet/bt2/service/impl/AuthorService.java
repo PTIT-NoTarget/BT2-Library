@@ -71,18 +71,4 @@ public class AuthorService implements IAuthorService {
         authorDto.setDob(author.getDob().toString());
         return authorDto;
     }
-
-    @Override
-    public void addAuthors() {
-        Set<Author> authors = new HashSet<>(authorRepos.findAll());
-        Author author1 = new Author();
-        author1.setName("Nguyen Nhat Anh");
-        author1.setDob(new Timestamp(0));
-        Author author2 = new Author();
-        author2.setName("Nguyen Nhat Anh");
-        author2.setDob(new Timestamp(0));
-        authors.add(author1);
-        authors.add(author2);
-        authorRepos.saveAll(authors);
-    }
 }

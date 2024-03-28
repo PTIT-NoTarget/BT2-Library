@@ -15,25 +15,5 @@ import java.util.Set;
 
 @Repository
 public interface AuthorRepos extends JpaRepository<Author, Integer> {
-    @EntityGraph(
-            type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {
-                    "books",
-                    "books.libraries",
-                    "books.categories",
-                    "books.pictures",
-            }
-    )
     Optional<Author> findById(int id);
-
-    @EntityGraph(
-            type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {
-                    "books",
-                    "books.libraries",
-                    "books.categories",
-                    "books.pictures",
-            }
-    )
-    List<Author> findAll();
 }

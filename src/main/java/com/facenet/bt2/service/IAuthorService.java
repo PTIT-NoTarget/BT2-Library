@@ -13,5 +13,4 @@ public interface IAuthorService {
     Set<AuthorDto> getAllAuthor();
     AuthorDto getAuthorById(int id);
     AuthorDto convertToDto(Author author);
-    void addAuthors();
 }
